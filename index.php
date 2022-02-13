@@ -8,9 +8,16 @@ $Checkpoint = [];
 while(!feof($arquivo)){
     $linha = fgets($arquivo, 1024);
     $linha = (str_replace('>','',str_replace('<','',explode(' ',$linha))));
-    print_r($linha);
     if($linha[0] == "Start"){ //Checkpoint
-       // array_push(str_replace(')','', str_replace('(','',$linha[0]));
+        array_push($Checkpoint, str_replace( ')','', str_replace('(','',$linha[2])));
+    }
+    if($linha[0] == "End"){ //Checkpoint
+        for($i = 0; count($to_redo) > $i ; $i++){
+            if($Checkpoint[0] != $to_redo[$i]){
+                unset($to_redo[$i]);
+            };
+        }
+        unset($Checkpoint[0]);
     }
 
     if($linha[0] == 'commit'){
@@ -26,6 +33,7 @@ while(!feof($arquivo)){
 }
 fclose($arquivo);
 print_r($to_redo);
+//rint_r($Checkpoint);
 if (!$db_handle) {
     echo "An error occurred.\n";
     exit;
