@@ -22,22 +22,20 @@ while(!feof($arquivo)){
         $valor = explode('=' ,$linha[0])[1]; 
       //  print_r($coluna);
         if($coluna == 'A'){
-               $result = pg_query_params($db_handle, "insert into tabela(id,a)  values($1,$2)", array($id,$valor));
+               $result = pg_query_params($db_handle, "insert into tabela(id,a,b)  values($1,$2,$3)", array($id,$valor,null));
             if (!$result) {
                 echo "An error occurred.\n";
                 exit;
             }
         }else if($coluna == 'B'){
-            $result = pg_query_params($db_handle, "insert into tabela(id,b)  values($1,$2)", array($id,$valor));
+            $result = pg_query_params($db_handle, "insert into tabela(id,a,b)  values($1,$2,$3)", array($id,null,$valor));
             if (!$result) {
                 echo "An error occurred.\n";
                 exit;
             }
         }
     }
-     
-
-    
+         
     if($linha[0] == "Start"){ //Checkpoint
         array_push($Checkpoint, str_replace(')','', str_replace('(','',$linha[2])));   //TO-DO resolver para caso onde check tem 2 variaveis
     }
@@ -74,24 +72,28 @@ $arquivo = fopen ('log.txt', 'r');
 while(!feof($arquivo)){ 
     $linha = fgets($arquivo, 1024);
     $linha = (str_replace('>','',str_replace('<','',explode(' ',$linha))));
-    //print_r($linha);
-    if(trim($linha[0][0]) != 'A' && trim($linha[0][0]) != 'B'){
-        $altera = (explode(',',$linha[0]));
-        print_r($altera);
+  
+    $altera = (explode(',',$linha[0]));
+
+    if(count($altera) == 4){
         foreach($redu as $value){
-            if($altera[0] == $value){
-                $result = pg_query_params($db_handle, "update table table set $1 = $2 where id = $3", array($altera[2],$altera[3],$altera[1]));
+            if(trim($altera[0]) == trim($value)){
+               print_r($altera);
+                print_r(strval(trim($altera[0])));
+                echo('\n');
+                //$result = pg_query_params($db_handle, "update tabela SET A = 100 where id = 1", array(strval($altera[2]) ,strval($altera[3]),strval($altera[1])));
+                pg_query($db_handle, "update tabela SET A = 100 where id = 1 and B is null");
                 if (!$result) {
                     echo "An error occurred.\n";
                     exit;
-                }
+            
             }
         }
     };
 
     
         
-
+    }
 }   
 fclose($arquivo);
 
