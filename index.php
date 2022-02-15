@@ -19,8 +19,8 @@ while(!feof($arquivo)){
    //    print_r($linha);
         $coluna = $linha[0][0] ;
         $id =  $linha[0][2];
-        $valor = explode('=' ,$linha[0])[1]; //TO-DO fazer o insert
-        print_r($coluna);
+        $valor = explode('=' ,$linha[0])[1]; 
+      //  print_r($coluna);
         if($coluna == 'A'){
                $result = pg_query_params($db_handle, "insert into tabela(id,a)  values($1,$2)", array($id,$valor));
             if (!$result) {
@@ -74,13 +74,13 @@ $arquivo = fopen ('log.txt', 'r');
 while(!feof($arquivo)){ 
     $linha = fgets($arquivo, 1024);
     $linha = (str_replace('>','',str_replace('<','',explode(' ',$linha))));
-    if(count($linha) == 1){
+    //print_r($linha);
+    if(trim($linha[0][0]) != 'A' && trim($linha[0][0]) != 'B'){
         $altera = (explode(',',$linha[0]));
+        print_r($altera);
         foreach($redu as $value){
             if($altera[0] == $value){
-               // $result = pg_prepare($db_handle, "update table table set $a = $valor where id = $id");
-              //  $result = pg_execute($db_handle,  array($a = $altera[2],$valor =  $altera[3],$id = $altera[1]));
-    
+                $result = pg_query_params($db_handle, "update table table set $1 = $2 where id = $3", array($altera[2],$altera[3],$altera[1]));
                 if (!$result) {
                     echo "An error occurred.\n";
                     exit;
@@ -97,11 +97,11 @@ fclose($arquivo);
 
 
 foreach($dont_redu as $value){
-    echo('não fez redu' .' '. $value);
+    //echo('não fez redu' .' '. $value);
 }
 
 foreach($redu as $value){
-    echo('Fez redu' .' '. $value);
+   // echo('Fez redu' .' '. $value);
 }
 
 
