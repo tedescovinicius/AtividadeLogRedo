@@ -78,9 +78,9 @@ while(!feof($arquivo)){
     if(count($altera) == 4){
         foreach($redu as $value){
             if(trim($altera[0]) == trim($value)){
-               print_r($altera);
-                print_r(strval(trim($altera[0])));
-                echo('\n');
+               //print_r($altera);
+                //print_r(strval(trim($altera[0])));
+               // echo('\n');
                 //$result = pg_query_params($db_handle, "update tabela SET A = 100 where id = 1", array(strval($altera[2]) ,strval($altera[3]),strval($altera[1])));
                 pg_query($db_handle, "update tabela SET A = 100 where id = 1 and B is null");
                 if (!$result) {
@@ -99,11 +99,11 @@ fclose($arquivo);
 
 
 foreach($dont_redu as $value){
-    //echo('não fez redu' .' '. $value);
+    echo('não fez redu' .' '. $value);
 }
 
 foreach($redu as $value){
-   // echo('Fez redu' .' '. $value);
+    echo('Fez redu' .' '. $value);
 }
 
 
