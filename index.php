@@ -78,21 +78,24 @@ while(!feof($arquivo)){
     if(count($altera) == 4){
         foreach($redu as $value){
             if(trim($altera[0]) == trim($value)){
-               //print_r($altera);
-                //print_r(strval(trim($altera[0])));
-               // echo('\n');
-                //$result = pg_query_params($db_handle, "update tabela SET A = 100 where id = 1", array(strval($altera[2]) ,strval($altera[3]),strval($altera[1])));
-                pg_query($db_handle, "update tabela SET A = 100 where id = 1 and B is null");
-                if (!$result) {
-                    echo "An error occurred.\n";
-                    exit;
-            
+               print_r($altera);
+                if($altera[2] == 'A'){
+                    $result = pg_query_params($db_handle, 'select A from tabela where id = $1 and B is null', array($altera[1]));
+                    while ($row = pg_fetch_row($result)) {
+                        if($row[0] != $altera[3]){
+                            $result = pg_query_params($db_handle, 'update tabela SET A = $1 where id = $2 and B is null', array($altera[3],$altera[1]));
+                        }
+                    }  
+                }else if($altera[2] == 'B'){
+                    $result = pg_query_params($db_handle, 'select B from tabela where id = $1 and A is null', array($altera[1]));
+                    while ($row = pg_fetch_row($result)) {
+                        if($row[0] != $altera[3]){
+                            $result = pg_query_params($db_handle, 'update tabela SET B = $1 where id = $2 and A is null', array($altera[3],$altera[1]));
+                        }
+                    }  
+                }    
             }
-        }
-    };
-
-    
-        
+        };    
     }
 }   
 fclose($arquivo);
